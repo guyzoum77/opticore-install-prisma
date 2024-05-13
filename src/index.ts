@@ -1,11 +1,12 @@
+#!/usr/bin/env node
+
 import clackCLI from "@clack/prompts";
 import colors from "ansi-colors";
 import {promisify} from "util";
-import {exec} from "node:child_process";
+import cp from "child_process";
 
-export default async function initializePrismaFunction(projectName: string, provider: string | any) {
-    const asyncExec = promisify(exec);
-    let ora = (await import("ora")).default;
+export async function initializePrismaFunction(projectName: string, provider: string | any) {
+    const asyncExec = promisify(cp.exec);
 
     const installPrismaORM =  await clackCLI.select({
         message: "Do you want install Prisma ORM ?",
@@ -22,12 +23,12 @@ export default async function initializePrismaFunction(projectName: string, prov
     }
 
     if (installPrismaORM[0] === "prisma_orm") {
-        const prismaSpinner= ora("Installing Prisma ORM\n").start();
-        await asyncExec(
-            `npx prisma init --datasource-provider ${provider}`,
-            { cwd: projectName }
-        ).then(async() => {
-            await asyncExec(`npx prisma generate`, { cwd: projectName });
+        await asyncExec("npm install prisma --save-dev @prisma/client").then(async () => {
+            try {
+                await asyncExec(`npx prisma init --datasource-provider ${provider}`, { cwd: projectName });
+            } catch (error) {
+                console.error("Error executing command:", error);
+            }
         });
 
     } else {
