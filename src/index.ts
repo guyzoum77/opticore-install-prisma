@@ -39,5 +39,6 @@ export async function initializePrismaFunction(projectName: string, provider: st
 
     } else {
         console.log(colors.bgCyan(`${colors.white(`You did not choose prisma as your ORM.`)}`));
+        console.log(`${colors.cyan(`You can choose any orm and setting up it in your project.`)}`);
     }
 }
