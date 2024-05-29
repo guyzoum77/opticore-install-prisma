@@ -45,6 +45,9 @@ export async function initializePrismaFunction(): Promise<void> {
         }
 
         if (fs.existsSync(path.join(process.cwd()) + "/prisma/schema.prisma")) {
+            console.error(`${colors.bgCyan(`${colors.white("Prisma has been already installed in your project.")}`)}`);
+            process.exit(0);
+        } else {
             const prismaORMSpinner = ora("Prisma ORM installation and configuration").start();
             await asyncExec("npm install prisma --save-dev @prisma/client").then(async (): Promise<void> => {
                 try {
@@ -66,9 +69,6 @@ export async function initializePrismaFunction(): Promise<void> {
                 envContent = envContent.replace(/^DATABASE_URL=.*$/m, '');
                 fs.writeFileSync(envFilePath, envContent, 'utf8');
             }
-        } else {
-            console.error(`${colors.bgCyan(`${colors.white("Prisma has been already installed in your project.")}`)}`);
-            process.exit(0);
         }
 
     } else {
