@@ -40,30 +40,35 @@ export async function initializePrismaFunction(): Promise<void> {
         });
 
         if (clackCLI.isCancel(providerSelected)) {
-            console.log(`${colors.bgRed(`${colors.white("Operation cancelled.")}`)}`);
+            console.error(`${colors.bgRed(`${colors.white("Operation cancelled.")}`)}`);
             process.exit(0);
         }
 
-        const prismaORMSpinner = ora("Prisma ORM installation and configuration").start();
-        await asyncExec("npm install prisma --save-dev @prisma/client").then(async (): Promise<void> => {
-            try {
-                await asyncExec(
-                    `npx prisma init --datasource-provider ${providerSelected[0]}`,
-                    { cwd: path.join(process.cwd()) }
-                );
-            } catch (error: any) {
-                console.error("Error executing command:", error.message);
-                fs.rmSync(path.join(process.cwd()) + "/prisma", { recursive: true, force: true });
-            }
-        });
-        prismaORMSpinner.succeed();
+        if (fs.existsSync(path.join(process.cwd()) + "/prisma/schema.prisma")) {
+            const prismaORMSpinner = ora("Prisma ORM installation and configuration").start();
+            await asyncExec("npm install prisma --save-dev @prisma/client").then(async (): Promise<void> => {
+                try {
+                    await asyncExec(
+                        `npx prisma init --datasource-provider ${providerSelected[0]}`,
+                        { cwd: path.join(process.cwd()) }
+                    );
+                } catch (error: any) {
+                    console.error("Error executing command:", error.message);
+                    fs.rmSync(path.join(process.cwd()) + "/prisma", { recursive: true, force: true });
+                }
+            });
+            prismaORMSpinner.succeed();
 
-        // Modify the .env file to remove or comment out the DATABASE_URL
-        const envFilePath: string = path.join(path.join(process.cwd()), '.env');
-        if (fs.existsSync(envFilePath)) {
-            let envContent: string = fs.readFileSync(envFilePath, 'utf8');
-            envContent = envContent.replace(/^DATABASE_URL=.*$/m, '');
-            fs.writeFileSync(envFilePath, envContent, 'utf8');
+            // Modify the .env file to remove or comment out the DATABASE_URL
+            const envFilePath: string = path.join(path.join(process.cwd()), '.env');
+            if (fs.existsSync(envFilePath)) {
+                let envContent: string = fs.readFileSync(envFilePath, 'utf8');
+                envContent = envContent.replace(/^DATABASE_URL=.*$/m, '');
+                fs.writeFileSync(envFilePath, envContent, 'utf8');
+            }
+        } else {
+            console.error(`${colors.bgCyan(`${colors.white("Prisma has been already installed in your project.")}`)}`);
+            process.exit(0);
         }
 
     } else {
