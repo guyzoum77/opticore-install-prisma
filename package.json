@@ -1,6 +1,6 @@
 {
-  "name": "opticore-prisma-orm-installer",
-  "version": "1.0.17",
+  "name": "opticore-install-prisma",
+  "version": "1.0.0",
   "description": "prisma ORM process installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guyzoum77/opticore-prisma-installer.git"
+    "url": "git+https://github.com/guyzoum77/opticore-install-prisma.git"
   },
   "author": "Guy-serge Kouacou",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/guyzoum77/opticore-prisma-installer/issues"
+    "url": "https://github.com/guyzoum77/opticore-install-prisma/issues"
   },
-  "homepage": "https://github.com/guyzoum77/opticore-prisma-installer#readme",
+  "homepage": "https://github.com/guyzoum77/opticore-install-prisma#readme",
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "@types/gradient-string": "^1.1.6",
