@@ -48,29 +48,37 @@ export async function initializePrismaFunction(): Promise<void> {
             console.error(`${colors.bgCyan(`${colors.white("Prisma has been already installed in your project.")}`)}`);
             process.exit(0);
         } else {
-            const prismaORMSpinner = ora("Prisma ORM installation and configuration").start();
-            await asyncExec("npm install prisma --save-dev @prisma/client").then(async (): Promise<void> => {
-                try {
-                    await asyncExec(
-                        `npx prisma init --datasource-provider ${providerSelected[0]}`,
-                        { cwd: path.join(process.cwd()) }
-                    );
-                } catch (error: any) {
-                    console.error("Error executing command:", error.message);
-                    fs.rmSync(path.join(process.cwd()) + "/prisma", { recursive: true, force: true });
-                }
-            });
-            prismaORMSpinner.succeed();
+            try {
+                const prismaORMSpinner = ora("Prisma ORM installation and configuration").start();
+                await asyncExec("npm install prisma --save-dev @prisma/client").then(async (): Promise<void> => {
+                    try {
+                        await asyncExec(
+                            `npx prisma init --datasource-provider ${providerSelected[0]}`,
+                            { cwd: path.join(process.cwd()) }
+                        );
+                    } catch (error: any) {
+                        console.error("Error executing command:", error.message);
+                        fs.rmSync(path.join(process.cwd()) + "/prisma", { recursive: true, force: true });
+                    }
+                });
+                prismaORMSpinner.succeed();
+                console.log(`${colors.bgGreen(`${colors.white(`The packages prisma and @prisma/client are been installed successfully.`)}`)}`);
 
-            // Modify the .env file to remove or comment out the DATABASE_URL
-            const envFilePath: string = path.join(path.join(process.cwd()), '.env');
-            if (fs.existsSync(envFilePath)) {
-                let envContent: string = fs.readFileSync(envFilePath, 'utf8');
-                envContent = envContent.replace(/^DATABASE_URL=.*$/m, '');
-                fs.writeFileSync(envFilePath, envContent, 'utf8');
+                // Modify the .env file to remove or comment out the DATABASE_URL
+                const envFilePath: string = path.join(path.join(process.cwd()), '.env');
+                if (fs.existsSync(envFilePath)) {
+                    let envContent: string = fs.readFileSync(envFilePath, 'utf8');
+                    envContent = envContent.replace(/^DATABASE_URL=.*$/m, '');
+                    fs.writeFileSync(envFilePath, envContent, 'utf8');
+                }
+                console.log(`${colors.cyan(`created`)} : ${colors.green(`prisma.schema`)}`);
+                console.log(`${colors.cyan(`Now you can use Prisma by instantiating the Prisma client by calling it like this :`)}`);
+                console.log(`${colors.cyan(`const prisma = new PrismaClient();`)}`);
+            } catch (err: any) {
+                console.error(`${colors.bgRed(`${colors.white(err.message)}`)}`);
+                process.exit(0);
             }
         }
-
     } else {
         console.log(colors.bgCyan(`${colors.white(`You did not choose prisma as your ORM.`)}`));
         console.log(`${colors.cyan(`So you can choose any orm and setting up it in your project.`)}`);
