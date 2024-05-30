@@ -72,7 +72,7 @@ export async function initializePrismaFunction(): Promise<void> {
                     fs.writeFileSync(envFilePath, envContent, 'utf8');
                 }
                 console.log(`${colors.cyan(`created`)} : ${colors.green(`prisma/prisma.schema`)}`);
-                console.log("Now you can use Prisma by instantiating the Prisma client by calling it like this :");
+                console.log("\nNow you can use Prisma by instantiating the Prisma client by calling it like this :");
                 console.log(`${colors.cyan(`const prisma = new PrismaClient();`)}`);
             } catch (err: any) {
                 console.error(`${colors.bgRed(`${colors.white(err.message)}`)}`);
