@@ -1,6 +1,6 @@
 {
   "name": "opticore-prisma-orm-installer",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "prisma ORM process installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
