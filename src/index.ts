@@ -49,18 +49,16 @@ export async function initializePrismaFunction(): Promise<void> {
             process.exit(0);
         } else {
             try {
-                const prismaORMSpinner = ora("Prisma ORM installation and configuration").start();
-                await asyncExec("npm install prisma --save-dev @prisma/client").then(async (): Promise<void> => {
-                    try {
-                        await asyncExec(
-                            `npx prisma init --datasource-provider ${providerSelected[0]}`,
-                            { cwd: path.join(process.cwd()) }
-                        );
-                    } catch (error: any) {
-                        console.error("Error executing command:", error.message);
-                        fs.rmSync(path.join(process.cwd()) + "/prisma", { recursive: true, force: true });
-                    }
-                });
+                const prismaORMSpinner = ora("Configuration of prisma schema...").start();
+                try {
+                    await asyncExec(
+                        `npx prisma init --datasource-provider ${providerSelected[0]}`,
+                        { cwd: path.join(process.cwd()) }
+                    );
+                } catch (error: any) {
+                    console.error("Error executing command:", error.message);
+                    fs.rmSync(path.join(process.cwd()) + "/prisma", { recursive: true, force: true });
+                }
                 prismaORMSpinner.succeed();
                 console.log(`${colors.bgGreen(`${colors.white(`The packages prisma and @prisma/client are been installed successfully.`)}`)}`);
 
