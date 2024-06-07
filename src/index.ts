@@ -34,8 +34,8 @@ export async function initializePrismaFunction(): Promise<void> {
             initialValue: ['mysql'],
             options: [
                 {label: 'MySQL', value: ['mysql']},
-                {label: 'Mongo DB', value: ['mongo_db']},
-                {label: 'Postgres', value: ['postgres']},
+                {label: 'Mongo DB', value: ['mongodb']},
+                {label: 'Postgres', value: ['postgresql']},
             ],
         });
 
