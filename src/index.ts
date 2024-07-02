@@ -7,6 +7,7 @@ import cp from "child_process";
 import fs from "fs";
 import path from "path";
 import {welcomeMessage} from "./utils/welcomeMessage";
+import {prismaProviderUtils} from "./utils/prismaProvider.utils";
 
 export async function initializePrismaFunction(): Promise<void> {
     let ora = (await import("ora")).default;
@@ -38,7 +39,6 @@ export async function initializePrismaFunction(): Promise<void> {
                 {label: 'Postgres', value: ['postgresql']},
             ],
         });
-
         if (clackCLI.isCancel(providerSelected)) {
             console.error(`${colors.bgRed(`${colors.white("Operation cancelled.")}`)}`);
             process.exit(0);
@@ -50,15 +50,20 @@ export async function initializePrismaFunction(): Promise<void> {
         } else {
             try {
                 const prismaORMSpinner = ora("Configuration of prisma schema...").start();
-                try {
-                    await asyncExec(
-                        `npx prisma init --datasource-provider ${providerSelected[0]}`,
-                        { cwd: path.join(process.cwd()) }
-                    );
-                } catch (error: any) {
-                    console.error("Error executing command:", error.message);
-                    fs.rmSync(path.join(process.cwd()) + "/prisma", { recursive: true, force: true });
-                }
+                providerSelected.map(async(selected: string): Promise<void> => {
+                    switch (selected) {
+                        case "mysql":
+                            await prismaProviderUtils("mysql");
+                            break;
+                        case "mongodb":
+                            await prismaProviderUtils("mongodb");
+                            break;
+                        case "postgresql":
+                            await prismaProviderUtils("postgresql");
+                            break;
+                    }
+                });
+
                 prismaORMSpinner.succeed();
                 console.log(`${colors.bgGreen(`${colors.white(`The packages prisma and @prisma/client are been installed successfully.`)}`)}`);
 
