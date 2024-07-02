@@ -53,12 +53,15 @@ export async function initializePrismaFunction(): Promise<void> {
                 providerSelected.map(async(selected: string): Promise<void> => {
                     switch (selected) {
                         case "mysql":
+                            console.log("selected is :", selected);
                             await prismaProviderUtils("mysql");
                             break;
                         case "mongodb":
+                            console.log("selected is :", selected);
                             await prismaProviderUtils("mongodb");
                             break;
                         case "postgresql":
+                            console.log("selected is :", selected);
                             await prismaProviderUtils("postgresql");
                             break;
                     }
